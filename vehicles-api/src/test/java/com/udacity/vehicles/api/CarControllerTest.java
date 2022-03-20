@@ -5,9 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -122,6 +120,20 @@ public class CarControllerTest {
         verify(carService,times(1)).findById(1L);
     }
 
+    /** Tests the updation of a single car
+     * @throws Exception if the update operation fails
+     */
+    @Test
+    public void testUpdateCar() throws Exception {
+        Car car = getCar();
+        car.setId(1L);
+        mvc.perform(put("/cars/1")
+                        .content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+        verify(carService,times(1)).save(any(Car.class));
+    }
     /**
      * Tests the deletion of a single car by ID.
      * @throws Exception if the delete operation of a vehicle fails
